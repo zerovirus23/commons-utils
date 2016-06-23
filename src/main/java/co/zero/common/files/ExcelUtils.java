@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.util.Date;
+
 /**
  * Created by htenjo on 6/22/16.
  */
@@ -24,52 +26,64 @@ public class ExcelUtils {
 
     private static void removeMergedRegionFillingValues(Sheet sheet, int regionIndex){
         CellRangeAddress cellRangeAddress = sheet.getMergedRegion(regionIndex);
-        String mergedCellsValue = getValueFromMergedRegion(sheet, regionIndex);
         sheet.removeMergedRegion(regionIndex);
-        setValueToCellRange(sheet, cellRangeAddress, mergedCellsValue);
+        setValueToCellRange(sheet, cellRangeAddress);
     }
 
-    private static String getValueFromMergedRegion(Sheet sheet, int regionIndex){
-        CellRangeAddress cellRangeAddress = sheet.getMergedRegion(regionIndex);
-        int firstColumnIndex = cellRangeAddress.getFirstColumn();
-        int firstRowIndex = cellRangeAddress.getFirstRow();
-        return getValueFromCell(sheet.getRow(firstRowIndex).getCell(firstColumnIndex));
-    }
-
-    private static void setValueToCellRange(Sheet sheet, CellRangeAddress cellRangeAddress, String value){
+    private static void setValueToCellRange(Sheet sheet, CellRangeAddress cellRangeAddress){
         int firstRowIndex = cellRangeAddress.getFirstRow();
         int firstColumnIndex = cellRangeAddress.getFirstColumn();
         int lastRowIndex = cellRangeAddress.getLastRow();
         int lastColumIndex = cellRangeAddress.getLastColumn();
+        Object cellValue;
 
         CellStyle filledStyle = sheet.getWorkbook().createCellStyle();
-        filledStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
-        filledStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        filledStyle.setFillForegroundColor(IndexedColors.GOLD.getIndex());
+        filledStyle.setFillPattern(CellStyle.SQUARES);
 
         for (int rowIndex = firstRowIndex; rowIndex <= lastRowIndex; rowIndex++) {
             for (int columnIndex = firstColumnIndex; columnIndex <= lastColumIndex; columnIndex++) {
+                cellValue = getValueFromMergedRegion(sheet, cellRangeAddress);
                 sheet.getRow(rowIndex).getCell(columnIndex).setCellStyle(filledStyle);
-                sheet.getRow(rowIndex).getCell(columnIndex).setCellValue(value);
+                setCellValue(sheet.getRow(rowIndex).getCell(columnIndex), cellValue);
             }
         }
     }
 
-    private static String getValueFromCell(Cell cell){
+    private static Object getValueFromMergedRegion(Sheet sheet, CellRangeAddress cellRangeAddress){
+        int firstColumnIndex = cellRangeAddress.getFirstColumn();
+        int firstRowIndex = cellRangeAddress.getFirstRow();
+        return getCellValue(sheet.getRow(firstRowIndex).getCell(firstColumnIndex));
+    }
+
+    private static Object getCellValue(Cell cell){
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
                 return cell.getRichStringCellValue().getString();
             case Cell.CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue().toString();
+                    return cell.getDateCellValue();
                 } else {
-                    return Double.toString(cell.getNumericCellValue());
+                    return cell.getNumericCellValue();
                 }
             case Cell.CELL_TYPE_BOOLEAN:
-                return Boolean.toString(cell.getBooleanCellValue());
+                return cell.getBooleanCellValue();
             case Cell.CELL_TYPE_FORMULA:
-                return cell.getCellFormula().toString();
+                return cell.getCellFormula();
             default:
                 return StringUtils.EMPTY;
+        }
+    }
+
+    private static void setCellValue(Cell cell, Object value){
+        if (value instanceof Number){
+            cell.setCellValue((Double)value);
+        }else if (value instanceof Date){
+            cell.setCellValue((Date)value);
+        }else if (value instanceof Boolean){
+            cell.setCellValue((Boolean)value);
+        }else{
+            cell.setCellValue((String)value);
         }
     }
 }

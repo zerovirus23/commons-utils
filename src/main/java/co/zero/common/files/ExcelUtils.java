@@ -56,7 +56,7 @@ public class ExcelUtils {
         return getCellValue(sheet.getRow(firstRowIndex).getCell(firstColumnIndex));
     }
 
-    private static Object getCellValue(Cell cell){
+    public static Object getCellValue(Cell cell){
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
                 return cell.getRichStringCellValue().getString();
@@ -85,5 +85,24 @@ public class ExcelUtils {
         }else{
             cell.setCellValue((String)value);
         }
+    }
+
+    public static CellStyle buildBasicCellStyle(Cell cell, short color, short pattern){
+        return buildBasicStyle(cell.getRow().getSheet().getWorkbook(), color, pattern);
+    }
+
+    public static CellStyle buildBasicCellStyle(Row row, short color, short pattern){
+        return buildBasicStyle(row.getSheet().getWorkbook(), color, pattern);
+    }
+
+    public static CellStyle buildBasicCellStyle(Sheet sheet, short color, short pattern){
+        return buildBasicStyle(sheet.getWorkbook(), color, pattern);
+    }
+
+    public static CellStyle buildBasicStyle(Workbook workbook, short color, short pattern){
+        CellStyle filledStyle = workbook.createCellStyle();
+        filledStyle.setFillForegroundColor(color);
+        filledStyle.setFillPattern(pattern);
+        return filledStyle;
     }
 }

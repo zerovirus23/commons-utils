@@ -1,5 +1,6 @@
 package co.zero.common.files;
 
+import co.zero.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -87,14 +88,17 @@ public class ExcelUtils {
         }
     }
 
+    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Cell cell, short color, short pattern){
         return buildBasicStyle(cell.getRow().getSheet().getWorkbook(), color, pattern);
     }
 
+    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Row row, short color, short pattern){
         return buildBasicStyle(row.getSheet().getWorkbook(), color, pattern);
     }
 
+    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Sheet sheet, short color, short pattern){
         return buildBasicStyle(sheet.getWorkbook(), color, pattern);
     }

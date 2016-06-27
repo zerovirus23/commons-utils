@@ -11,7 +11,6 @@ import java.util.Date;
  * Created by htenjo on 6/22/16.
  */
 public class ExcelUtils {
-
     public static void removeAllMergedCellsFromWorkbook(Workbook workbook){
         int numberOfSheets = workbook.getNumberOfSheets();
         Sheet currentSheet;
@@ -76,6 +75,35 @@ public class ExcelUtils {
         }
     }
 
+    public static String getCellStringValue(Cell cell){
+        return getCellValue(cell).toString();
+    }
+
+    public static double getCellNumericValue(Cell cell){
+        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+            return cell.getNumericCellValue();
+        }else{
+            throw new IllegalArgumentException("Cell value is not a Number");
+        }
+    }
+
+    public static Date getCellDateValue(Cell cell){
+        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted(cell)){
+            return cell.getDateCellValue();
+        }else{
+            throw new IllegalArgumentException("Cell value is not a Date");
+        }
+    }
+
+    public static boolean getCellBooleanValue(Cell cell){
+        if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
+            return cell.getBooleanCellValue();
+        }else{
+            throw new IllegalArgumentException("Cell value is not a Boolean");
+        }
+    }
+
+
     private static void setCellValue(Cell cell, Object value){
         if (value instanceof Number){
             cell.setCellValue((Double)value);
@@ -88,17 +116,14 @@ public class ExcelUtils {
         }
     }
 
-    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Cell cell, short color, short pattern){
         return buildBasicStyle(cell.getRow().getSheet().getWorkbook(), color, pattern);
     }
 
-    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Row row, short color, short pattern){
         return buildBasicStyle(row.getSheet().getWorkbook(), color, pattern);
     }
 
-    @SuppressWarnings(Constants.WARNING_UNUSED)
     public static CellStyle buildBasicCellStyle(Sheet sheet, short color, short pattern){
         return buildBasicStyle(sheet.getWorkbook(), color, pattern);
     }

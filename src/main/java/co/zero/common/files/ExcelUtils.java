@@ -59,7 +59,7 @@ public class ExcelUtils {
     public static Object getCellValue(Cell cell){
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
-                return cell.getRichStringCellValue().getString();
+                return StringUtils.trim(cell.getRichStringCellValue().getString());
             case Cell.CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     return cell.getDateCellValue();
@@ -76,7 +76,7 @@ public class ExcelUtils {
     }
 
     public static String getCellStringValue(Cell cell){
-        return getCellValue(cell).toString();
+        return StringUtils.trim(getCellValue(cell).toString());
     }
 
     public static double getCellNumericValue(Cell cell){

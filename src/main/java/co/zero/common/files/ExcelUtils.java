@@ -76,6 +76,10 @@ public class ExcelUtils {
     }
 
     public static String getCellStringValue(Cell cell){
+        return getCellValue(cell).toString();
+    }
+
+    public static String getCellStringValueNoSpaces(Cell cell){
         return StringUtils.trim(getCellValue(cell).toString());
     }
 

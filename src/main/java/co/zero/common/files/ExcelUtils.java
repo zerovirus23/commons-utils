@@ -138,4 +138,24 @@ public class ExcelUtils {
         filledStyle.setFillPattern(pattern);
         return filledStyle;
     }
+
+    public static String rowToString(Row row){
+        StringBuilder rowContent = new StringBuilder();
+        Cell currentCell;
+
+        if(row != null){
+            for(int i=0; i<row.getLastCellNum(); i++){
+                currentCell = row.getCell(i);
+
+                if(currentCell != null){
+                    rowContent.append("| Cell " + i + " = " + getCellValue(currentCell  ).toString());
+                }else{
+                    rowContent.append("| Cell " + i + " = NULL");
+                }
+            }
+        }
+
+
+        return rowContent.toString();
+    }
 }

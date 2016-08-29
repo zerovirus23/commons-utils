@@ -1,6 +1,5 @@
 package co.zero.common.files;
 
-import co.zero.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -11,6 +10,9 @@ import java.util.Date;
  * Created by htenjo on 6/22/16.
  */
 public class ExcelUtils {
+    /**
+     * @param workbook
+     */
     public static void removeAllMergedCellsFromWorkbook(Workbook workbook){
         int numberOfSheets = workbook.getNumberOfSheets();
         Sheet currentSheet;
@@ -24,12 +26,22 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param sheet
+     * @param regionIndex
+     */
     private static void removeMergedRegionFillingValues(Sheet sheet, int regionIndex){
         CellRangeAddress cellRangeAddress = sheet.getMergedRegion(regionIndex);
         sheet.removeMergedRegion(regionIndex);
         setValueToCellRange(sheet, cellRangeAddress);
     }
 
+    /**
+     *
+     * @param sheet
+     * @param cellRangeAddress
+     */
     private static void setValueToCellRange(Sheet sheet, CellRangeAddress cellRangeAddress){
         int firstRowIndex = cellRangeAddress.getFirstRow();
         int firstColumnIndex = cellRangeAddress.getFirstColumn();
@@ -50,12 +62,23 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param sheet
+     * @param cellRangeAddress
+     * @return
+     */
     private static Object getValueFromMergedRegion(Sheet sheet, CellRangeAddress cellRangeAddress){
         int firstColumnIndex = cellRangeAddress.getFirstColumn();
         int firstRowIndex = cellRangeAddress.getFirstRow();
         return getCellValue(sheet.getRow(firstRowIndex).getCell(firstColumnIndex));
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static Object getCellValue(Cell cell){
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
@@ -75,14 +98,29 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static String getCellStringValue(Cell cell){
         return getCellValue(cell).toString();
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static String getCellStringValueNoSpaces(Cell cell){
         return StringUtils.trim(getCellValue(cell).toString());
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static double getCellNumericValue(Cell cell){
         if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
             return cell.getNumericCellValue();
@@ -91,6 +129,11 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static Date getCellDateValue(Cell cell){
         if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted(cell)){
             return cell.getDateCellValue();
@@ -99,6 +142,11 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param cell
+     * @return
+     */
     public static boolean getCellBooleanValue(Cell cell){
         if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
             return cell.getBooleanCellValue();
@@ -107,7 +155,11 @@ public class ExcelUtils {
         }
     }
 
-
+    /**
+     *
+     * @param cell
+     * @param value
+     */
     private static void setCellValue(Cell cell, Object value){
         if (value instanceof Number){
             cell.setCellValue((Double)value);
@@ -120,18 +172,46 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     *
+     * @param cell
+     * @param color
+     * @param pattern
+     * @return
+     */
     public static CellStyle buildBasicCellStyle(Cell cell, short color, short pattern){
         return buildBasicStyle(cell.getRow().getSheet().getWorkbook(), color, pattern);
     }
 
+    /**
+     *
+     * @param row
+     * @param color
+     * @param pattern
+     * @return
+     */
     public static CellStyle buildBasicCellStyle(Row row, short color, short pattern){
         return buildBasicStyle(row.getSheet().getWorkbook(), color, pattern);
     }
 
+    /**
+     *
+     * @param sheet
+     * @param color
+     * @param pattern
+     * @return
+     */
     public static CellStyle buildBasicCellStyle(Sheet sheet, short color, short pattern){
         return buildBasicStyle(sheet.getWorkbook(), color, pattern);
     }
 
+    /**
+     * O
+     * @param workbook
+     * @param color
+     * @param pattern
+     * @return
+     */
     public static CellStyle buildBasicStyle(Workbook workbook, short color, short pattern){
         CellStyle filledStyle = workbook.createCellStyle();
         filledStyle.setFillForegroundColor(color);
